@@ -2,6 +2,7 @@
   "name": "iot-manager-web",
   "version": "0.1.0",
   "author": "Artem Golovin <artgolovin96@gmail.com>",
+  "license": "MIT",
   "scripts": {
     "build": "gatsby build",
     "deploy": "gatsby build --prefix-paths",
@@ -13,8 +14,14 @@
     "test": "echo \"Tests would be there.. i hope\""
   },
   "dependencies": {
+    "@emotion/core": "^10.0.22",
+    "@emotion/styled": "^10.0.23",
+    "@material-ui/core": "^4.6.1",
+    "@material-ui/icons": "^4.5.1",
+    "@material-ui/styles": "^4.6.0",
     "gatsby": "^2.17.11",
     "gatsby-image": "^2.2.31",
+    "gatsby-plugin-emotion": "^4.1.15",
     "gatsby-plugin-manifest": "^2.2.27",
     "gatsby-plugin-offline": "^3.0.19",
     "gatsby-plugin-react-helmet": "^3.1.14",
@@ -24,20 +31,23 @@
     "prop-types": "^15.7.2",
     "react": "^16.11.0",
     "react-dom": "^16.11.0",
-    "react-helmet": "^5.2.1"
+    "react-helmet": "^5.2.1",
+    "recharts": "^1.8.5"
   },
   "devDependencies": {
+    "husky": "^3.1.0",
+    "lint-staged": "^9.4.3",
     "prettier": "^1.19.1"
   },
-  "keywords": [
-    "gatsby"
-  ],
-  "license": "MIT",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/gatsbyjs/gatsby-starter-default"
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
   },
-  "bugs": {
-    "url": "https://github.com/gatsbyjs/gatsby/issues"
+  "lint-staged": {
+    "*.{js,json,md,css,yaml,yml}": [
+      "prettier --write",
+      "git add"
+    ]
   }
 }

@@ -17,13 +17,15 @@ jobs:
         version: '12'
 
 #     Cache the dependencies for faster deployes
-    - name: cache deps
-      uses: actions/cache@master
+    - name: Cache node modules
+      uses: actions/cache@v1
       with:
-        path: ~/.npm
-        key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+        path: node_modules
+        key: ${{ runner.OS }}-build-${{ hashFiles('**/package-lock.json') }}
         restore-keys: |
-          ${{ runner.os }}-node-
+          ${{ runner.OS }}-build-${{ env.cache-name }}-
+          ${{ runner.OS }}-build-
+          ${{ runner.OS }}-
 
 #     Run the npm tasks. Ideally should be yarn
     - run: npm ci

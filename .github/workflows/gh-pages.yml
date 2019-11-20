@@ -15,6 +15,8 @@ jobs:
       uses: actions/setup-node@v1.1.0
       with:
         version: '12'
+    
+
 
 #     Cache the dependencies for faster deployes
     - name: Cache node modules
@@ -26,11 +28,14 @@ jobs:
           ${{ runner.OS }}-build-${{ env.cache-name }}-
           ${{ runner.OS }}-build-
           ${{ runner.OS }}-
-#     Run the npm tasks. Ideally should be yarn
-    - run: npm ci
-    - run: npm run format
-    - run: npm run test
-    - run: npm run deploy
+#     Run the npm tasks
+    - uses: borales/actions-yarn@v2.1.0
+      with:
+        cmd: install
+    - uses: borales/actions-yarn@v2.1.0
+      with:
+        cmd: deploy
+        
     - name: Deploy
       uses: peaceiris/actions-gh-pages@v2.5.1
       env:

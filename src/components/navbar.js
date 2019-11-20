@@ -18,28 +18,41 @@ const useStyles = makeStyles(theme =>
 
 function Navbar() {
   const classes = useStyles();
-  const [tab, setTab] = useState('dashboard');
+  const [tab, setTab] = useState(0);
 
   const tabs = [
     {
       label: 'Dashboard',
-      value: 'dashboard',
+      value: 0,
       to: '/',
       icon: <DashboardRounded />,
     },
     {
       label: 'Devices',
-      value: 'devices',
+      value: 1,
       to: '/devices',
       icon: <DevicesOtherRounded />,
     },
     {
       label: 'Settings',
-      value: 'settings',
+      value: 2,
       to: '/settings',
       icon: <SettingsRounded />,
     },
   ];
+
+  const NavLink = React.forwardRef((props, ref) => (
+    <Link
+      {...props}
+      getProps={({ isPartiallyCurrent }) => {
+        // the object returned here is passed to the
+        // anchor element's props
+        if (isPartiallyCurrent) {
+          setTab(props.index);
+        }
+      }}
+    />
+  ));
 
   return (
     <AppBar position="static">
@@ -57,9 +70,9 @@ function Navbar() {
                   key={value}
                   classes={{ root: classes.fullHeight }}
                   label={label}
-                  value={value}
+                  index={value}
                   icon={icon}
-                  component={Link}
+                  component={NavLink}
                   to={to}
                 />
               ))}

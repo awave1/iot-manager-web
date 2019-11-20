@@ -30,7 +30,7 @@ jobs:
     - run: npm ci
     - run: npm run format
     - run: npm run test
-    - run: npm run build --prefix-paths
+    - run: npm run deploy
     - name: Deploy
       uses: peaceiris/actions-gh-pages@v2.5.1
       env:

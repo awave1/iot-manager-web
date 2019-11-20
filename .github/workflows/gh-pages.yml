@@ -1,0 +1,38 @@
+name: iot-manager webapp
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  build-deploy:
+    runs-on: [ubuntu-latest]
+    steps:
+    - uses: actions/checkout@master
+    
+    - name: Setup node
+      uses: actions/setup-node@v1.1.0
+      with:
+        node-version: '12'
+
+#     Cache the dependencies for faster deployes
+    - name: cache deps
+      uses: actions/cache@master
+      with:
+        path: ~/.npm
+        key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+        restore-keys: |
+          ${{ runner.os }}-node-
+
+#     Run the npm tasks. Ideally should be yarn
+    - run: npm ci
+    - run: npm run format
+    - run: npm run test
+    - run: npm run build
+    - name: Deploy
+      uses: peaceiris/actions-gh-pages@v2.5.1
+      env:
+        ACTIONS_DEPLOY_KEY: ${{ secrets.ACTIONS_DEPLOY_KEY }}
+        PUBLISH_BRANCH: gh-pages
+        PUBLISH_DIR: ./public  

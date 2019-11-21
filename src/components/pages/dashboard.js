@@ -5,6 +5,7 @@ import { Grid, Paper } from '@material-ui/core';
 import { makeStyles, createStyles } from '@material-ui/core/styles';
 import Chart from '../loadableChart';
 import { useInterval } from '../../hooks';
+import Utils from '../../utils';
 
 const useStyles = makeStyles(theme =>
   createStyles({
@@ -212,9 +213,6 @@ const chartOptions = {
   },
 };
 
-const getRandomVal = (max = 90, min = 20) =>
-  Math.floor(Math.random() * (max - min + 1)) + min;
-
 function Dashboard({ mqttServerAddress }) {
   const classes = useStyles();
   const [lineChartData, setLineChartData] = useState(dummyData.mixed);
@@ -225,13 +223,12 @@ function Dashboard({ mqttServerAddress }) {
   mqttClient.on('connect', () => {});
   mqttClient.on('message', (topic, payload) => {
     if (topic === 'test-iot') {
-      const strPayload = new TextDecoder('utf-8').decode(payload);
-      // Generate random data upon received message
-      const updatedLineChartData = lineChartData.map(({ name, type, data }) => {
-        const updatedData = data.map(() => getRandomVal());
-        return { data: updatedData, type, name };
-      });
-      setLineChartData(updatedLineChartData);
+      if (Utils.isJson(payload)) {
+        const receivedData = JSON.parse(payload);
+        if (receivedData.length) {
+          setLineChartData(receivedData);
+        }
+      }
     }
   });
 

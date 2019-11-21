@@ -1,11 +1,11 @@
 import React, { useState, useEffect, useRef } from 'react';
-import clsx from 'clsx';
 import mqtt from 'mqtt';
-import { Grid, Paper } from '@material-ui/core';
+import { Grid, Paper, Typography } from '@material-ui/core';
 import { makeStyles, createStyles } from '@material-ui/core/styles';
 import Chart from '../loadableChart';
 import { useInterval } from '../../hooks';
 import Utils from '../../utils';
+import { subscribe } from 'mqtt-react';
 
 const useStyles = makeStyles(theme =>
   createStyles({
@@ -25,7 +25,7 @@ const useStyles = makeStyles(theme =>
 );
 
 const dummyData = {
-  mixed: [
+  line: [
     {
       name: 'series-1',
       type: 'line',
@@ -54,7 +54,7 @@ const dummyData = {
 };
 
 const chartOptions = {
-  mixed: {
+  line: {
     chart: {
       id: 'basic-bar',
       toolbar: {
@@ -88,7 +88,7 @@ const chartOptions = {
       max: 100,
     },
   },
-  radial: {
+  radialBar: {
     plotOptions: {
       radialBar: {
         startAngle: -135,
@@ -213,88 +213,39 @@ const chartOptions = {
   },
 };
 
-function Dashboard({ mqttServerAddress }) {
+const charts = ({ data, classes }) => {
+  if (data.length && data[0]) {
+    return data[0].map(({ type, data }, index) => (
+      <Grid key={index} xs={12} md={12} lg={6} item>
+        <Paper className={classes.paper}>
+          <Chart type={type} options={chartOptions[type]} series={data} />
+        </Paper>
+      </Grid>
+    ));
+  } else {
+    return (
+      <Grid xs={12} md={12} lg={6} item>
+        <Paper className={classes.paper}>
+          <Typography variant="h2">No Data</Typography>
+          <Chart
+            type="line"
+            options={chartOptions.line}
+            series={dummyData.line}
+          />
+        </Paper>
+      </Grid>
+    );
+  }
+};
+
+const Charts = subscribe({ topic: 'test-iot' })(charts);
+
+function Dashboard() {
   const classes = useStyles();
-  const [lineChartData, setLineChartData] = useState(dummyData.mixed);
-  const [radialChartData, setRadialChartData] = useState(dummyData.radial);
-  const [barChartData, setBarChartData] = useState(dummyData.bar);
-  const mqttClient = mqtt.connect(mqttServerAddress);
-
-  const setData = (type, data) => {
-    if (data.length && type) {
-      if (type === 'line') {
-        setLineChartData(data);
-      } else if (type === 'radial') {
-        setRadialChartData(data);
-      } else if (type === 'bar') {
-        setBarChartData(data);
-      }
-    }
-  };
-
-  mqttClient.on('connect', () => {});
-  mqttClient.on('message', (topic, payload) => {
-    if (topic === 'test-iot') {
-      if (Utils.isJson(payload)) {
-        const json = JSON.parse(payload);
-        if (json.length) {
-          json.forEach(({ type, data }) => setData(type, data));
-        } else {
-          setData(json.type, json.data);
-        }
-      }
-    }
-  });
-
-  // unsubscribe when component will unmount
-  useEffect(() => {
-    return () => {
-      mqttClient.unsubscribe('test-iot', () => console.log('unsubscribed'));
-    };
-  }, [mqttClient]);
-
-  // subscribe when component mounted
-  useEffect(() => {
-    mqttClient.subscribe('test-iot', err => {
-      if (!err) {
-        console.log('subscribed');
-      }
-    });
-  }, [mqttClient]);
-
   return (
     <div className={classes.root}>
       <Grid container spacing={6} justify="center">
-        <Grid xs={12} md={12} lg={6} item>
-          <Paper className={classes.paper}>
-            <Chart
-              type="line"
-              options={chartOptions.mixed}
-              series={lineChartData}
-            />
-          </Paper>
-        </Grid>
-
-        <Grid xs={12} md={12} lg={6} item>
-          <Paper className={classes.paper}>
-            <Chart
-              type="radialBar"
-              options={chartOptions.radial}
-              series={radialChartData}
-            />
-          </Paper>
-        </Grid>
-
-        <Grid xs={12} md={12} lg={12} item>
-          <Paper className={classes.paper}>
-            <Chart
-              type="bar"
-              height={150}
-              options={chartOptions.bar}
-              series={barChartData}
-            />
-          </Paper>
-        </Grid>
+        <Charts classes={classes} />
       </Grid>
     </div>
   );

@@ -1,3 +1,5 @@
+require('dotenv').config();
+
 module.exports = {
   pathPrefix: '/iot-manager-web',
   siteMetadata: {

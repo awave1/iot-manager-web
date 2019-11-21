@@ -1,8 +1,8 @@
 import React, { useState, useEffect, useRef } from 'react';
 import clsx from 'clsx';
 import { Grid, Paper } from '@material-ui/core';
-import Chart from 'react-apexcharts';
 import { makeStyles, createStyles } from '@material-ui/core/styles';
+import Chart from '../loadableChart';
 import { useInterval } from '../../hooks';
 
 const useStyles = makeStyles(theme =>

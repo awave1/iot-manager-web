@@ -9,9 +9,13 @@ import {
   Legend,
 } from 'recharts';
 
-const SeriesGraph = ({ data }) => {
+const SeriesGraph = ({ data, center }) => {
+  const style = {
+    alignSelf: center ? 'center' : 'initial',
+  };
+
   return (
-    <ComposedChart width={730} height={250} data={data}>
+    <ComposedChart style={style} width={730} height={250} data={data}>
       <CartesianGrid strokeDasharray="3 3" />
       <XAxis dataKey="name" />
       <YAxis />

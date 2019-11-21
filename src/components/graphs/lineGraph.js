@@ -1,9 +1,13 @@
 import React from 'react';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Legend } from 'recharts';
 
-const LineGraph = ({ data }) => {
+const LineGraph = ({ data, center }) => {
+  const style = {
+    alignSelf: center ? 'center' : 'initial',
+  };
+
   return (
-    <LineChart width={730} height={250} data={data}>
+    <LineChart style={style} width={730} height={250} data={data}>
       <CartesianGrid strokeDasharray="3 3" />
       <XAxis dataKey="name" />
       <YAxis />

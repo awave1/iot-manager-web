@@ -30,8 +30,7 @@ const Layout = ({ children }) => (
     </Helmet>
     <ThemeProvider theme={theme}>
       <CssBaseline />
-      <Navbar />
-      {children}
+      <Navbar renderContent={() => <>{children}</>} />
     </ThemeProvider>
   </>
 );

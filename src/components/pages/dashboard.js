@@ -218,22 +218,29 @@ function Dashboard({ mqttServerAddress }) {
   const [lineChartData, setLineChartData] = useState(dummyData.mixed);
   const [radialChartData, setRadialChartData] = useState(dummyData.radial);
   const [barChartData, setBarChartData] = useState(dummyData.bar);
-
   const mqttClient = mqtt.connect(mqttServerAddress);
+
+  const setData = (type, data) => {
+    if (data.length && type) {
+      if (type === 'line') {
+        setLineChartData(data);
+      } else if (type === 'radial') {
+        setRadialChartData(data);
+      } else if (type === 'bar') {
+        setBarChartData(data);
+      }
+    }
+  };
+
   mqttClient.on('connect', () => {});
   mqttClient.on('message', (topic, payload) => {
     if (topic === 'test-iot') {
       if (Utils.isJson(payload)) {
-        const { type, data } = JSON.parse(payload);
-
-        if (data.length && type) {
-          if (type === 'line') {
-            setLineChartData(data);
-          } else if (type === 'radial') {
-            setRadialChartData(data);
-          } else if (type === 'bar') {
-            setBarChartData(data);
-          }
+        const json = JSON.parse(payload);
+        if (json.length) {
+          json.forEach(({ type, data }) => setData(type, data));
+        } else {
+          setData(json.type, json.data);
         }
       }
     }

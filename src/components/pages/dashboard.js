@@ -29,26 +29,26 @@ const dummyData = {
     {
       name: 'series-1',
       type: 'line',
-      data: [30, 40, 25, 50, 49, 21, 70, 51],
+      data: [0, 0, 0, 0, 0, 0, 0, 0],
     },
   ],
-  radial: [76],
+  radial: [0],
   bar: [
     {
       name: 'blue',
-      data: [32],
+      data: [0],
     },
     {
       name: 'green',
-      data: [41],
+      data: [0],
     },
     {
       name: 'yellow',
-      data: [12],
+      data: [0],
     },
     {
       name: 'red',
-      data: [65],
+      data: [0],
     },
   ],
 };
@@ -224,9 +224,16 @@ function Dashboard({ mqttServerAddress }) {
   mqttClient.on('message', (topic, payload) => {
     if (topic === 'test-iot') {
       if (Utils.isJson(payload)) {
-        const receivedData = JSON.parse(payload);
-        if (receivedData.length) {
-          setLineChartData(receivedData);
+        const { type, data } = JSON.parse(payload);
+
+        if (data.length && type) {
+          if (type === 'line') {
+            setLineChartData(data);
+          } else if (type === 'radial') {
+            setRadialChartData(data);
+          } else if (type === 'bar') {
+            setBarChartData(data);
+          }
         }
       }
     }

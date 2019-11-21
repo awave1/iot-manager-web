@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import clsx from 'clsx';
+import mqtt from 'mqtt';
 import { Grid, Paper } from '@material-ui/core';
 import { makeStyles, createStyles } from '@material-ui/core/styles';
 import Chart from '../loadableChart';
@@ -204,7 +205,6 @@ const chartOptions = {
         stops: [90, 0, 100],
       },
     },
-
     legend: {
       position: 'bottom',
       horizontalAlign: 'right',
@@ -215,30 +215,41 @@ const chartOptions = {
 const getRandomVal = (max = 90, min = 20) =>
   Math.floor(Math.random() * (max - min + 1)) + min;
 
-function Dashboard() {
+function Dashboard({ mqttServerAddress }) {
   const classes = useStyles();
   const [lineChartData, setLineChartData] = useState(dummyData.mixed);
   const [radialChartData, setRadialChartData] = useState(dummyData.radial);
   const [barChartData, setBarChartData] = useState(dummyData.bar);
 
-  // Randomize the data every minute
-  useInterval(() => {
-    const updatedLineChartData = lineChartData.map(({ name, type, data }) => {
-      const updatedData = data.map(() => getRandomVal());
-      return { data: updatedData, type, name };
-    });
+  const mqttClient = mqtt.connect(mqttServerAddress);
+  mqttClient.on('connect', () => {});
+  mqttClient.on('message', (topic, payload) => {
+    if (topic === 'test-iot') {
+      const strPayload = new TextDecoder('utf-8').decode(payload);
+      // Generate random data upon received message
+      const updatedLineChartData = lineChartData.map(({ name, type, data }) => {
+        const updatedData = data.map(() => getRandomVal());
+        return { data: updatedData, type, name };
+      });
+      setLineChartData(updatedLineChartData);
+    }
+  });
 
-    const updatedBarChartData = barChartData.map(({ name, data }) => {
-      return {
-        data: [getRandomVal()],
-        name,
-      };
-    });
+  // unsubscribe when component will unmount
+  useEffect(() => {
+    return () => {
+      mqttClient.unsubscribe('test-iot', () => console.log('unsubscribed'));
+    };
+  }, [mqttClient]);
 
-    setLineChartData(updatedLineChartData);
-    setRadialChartData([getRandomVal()]);
-    setBarChartData(updatedBarChartData);
-  }, 5000);
+  // subscribe when component mounted
+  useEffect(() => {
+    mqttClient.subscribe('test-iot', err => {
+      if (!err) {
+        console.log('subscribed');
+      }
+    });
+  }, [mqttClient]);
 
   return (
     <div className={classes.root}>

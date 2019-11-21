@@ -6,7 +6,7 @@ import { Dashboard, Devices, Settings } from '../components/pages/';
 const App = () => (
   <Layout>
     <Router>
-      <Dashboard path="/" />
+      <Dashboard path="/" mqttServerAddress="mqtt://test.mosquitto.org:8081" />
       <Devices path="/devices" />
       <Settings path="/settings" />
     </Router>

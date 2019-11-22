@@ -13,3 +13,29 @@ exports.onCreatePage = ({ page, actions }) => {
     createPage(page);
   }
 };
+
+// @HACK: to remove shebang from mqtt
+// https://github.com/webpack/webpack/issues/2168#issuecomment-339184660
+exports.onCreateWebpackConfig = ({
+  stage,
+  rules,
+  loaders,
+  plugins,
+  actions,
+}) => {
+  actions.setWebpackConfig({
+    module: {
+      rules: [
+        {
+          test: /node_modules[/\\]mqtt/i,
+          loader: 'shebang-loader',
+        },
+      ],
+    },
+    plugins: [
+      plugins.define({
+        __DEVELOPMENT__: stage === `develop` || stage === `develop-html`,
+      }),
+    ],
+  });
+};

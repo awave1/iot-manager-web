@@ -1,4 +1,19 @@
-require('dotenv').config();
+const dotenv = require('dotenv');
+const fs = require('fs');
+
+dotenv.config({
+  path: `.env.${process.env.NODE_ENV}`,
+});
+
+fs.writeFileSync(
+  './.env',
+  [
+    `MQTT_HOST=${process.env.MQTT_HOST}`,
+    `MQTT_PORT=${process.env.MQTT_PORT}`,
+    `MQTT_PASS=${process.env.MQTT_PASS}`,
+    `MQTT_USER=${process.env.MQTT_USER}`,
+  ].join('\n')
+);
 
 module.exports = {
   pathPrefix: '/iot-manager-web',

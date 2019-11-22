@@ -6,13 +6,19 @@ import mqtt from 'mqtt';
 import { Connector } from 'mqtt-react';
 
 const cloudMqttUrl = `mqtts://${process.env.MQTT_HOST}`;
-const mqttClient = mqtt.connect(cloudMqttUrl, {
-  username: process.env.MQTT_USER,
-  password: process.env.MQTT_PASS,
+const options = {
   port: process.env.MQTT_PORT,
-});
+};
+
+if (process.env.NODE_ENV === 'production') {
+  Object.assign(options, {
+    username: process.env.MQTT_USER,
+    password: process.env.MQTT_PASS,
+  });
+}
+
 const App = () => (
-  <Connector mqtt={mqttClient}>
+  <Connector mqtt={mqtt.connect(cloudMqttUrl, options)}>
     <Layout>
       <Router>
         <Dashboard path="/" />

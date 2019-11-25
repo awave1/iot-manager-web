@@ -1,7 +1,8 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { Grid } from '@material-ui/core';
 import { makeStyles, createStyles } from '@material-ui/core/styles';
 import LineGraph from '../lineGraph';
+import { ConnectorContext } from '../mqtt/connector';
 
 const useStyles = makeStyles(theme =>
   createStyles({

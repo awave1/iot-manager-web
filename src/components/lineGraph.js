@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { subscribe } from 'mqtt-react';
+import subscribe from '../components/mqtt/subscribe';
 import Chart from './loadableChart';
 import {
   Card,

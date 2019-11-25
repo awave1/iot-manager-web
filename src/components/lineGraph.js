@@ -205,7 +205,7 @@ function Charts({ data }) {
       return { name, type, data };
     });
     setChartData(newData);
-  }, [data]);
+  }, []);
 
   return (
     <Grid xs={12} md={12} lg={6} item>

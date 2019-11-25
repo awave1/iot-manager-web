@@ -1,9 +1,8 @@
 import React from 'react';
-import { Router, Link, Location } from '@reach/router';
+import { Router } from '@reach/router';
 import { Layout } from '../components';
 import { Dashboard, Devices, Settings } from '../components/pages/';
 import mqtt from 'mqtt';
-import { Connector } from 'mqtt-react';
 import { ConnectorProvider } from '../components/mqtt/connector';
 
 const cloudMqttUrl = `mqtts://${process.env.MQTT_HOST}`;

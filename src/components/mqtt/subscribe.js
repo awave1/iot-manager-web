@@ -1,11 +1,4 @@
-import React, {
-  Component,
-  createElement,
-  useEffect,
-  useState,
-  useContext,
-} from 'react';
-import PropTypes from 'prop-types';
+import { createElement, useEffect, useState, useContext } from 'react';
 import omit from 'object.omit';
 import ConnectorContext from './connectorContext';
 
@@ -31,11 +24,11 @@ export default function subscribe(options) {
         subscribe(topic);
 
         mqtt.on('message', (topic, message, packet) => {
-          console.log({ topic, message: parse(message) });
           const jsonMessage = parse(message);
           const newData = [jsonMessage, ...data];
+          console.log({ newData });
           setData(newData);
-          console.log(data);
+          console.log({ data });
         });
       }, []);
 

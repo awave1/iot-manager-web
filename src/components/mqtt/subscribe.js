@@ -1,4 +1,10 @@
-import { createElement, useEffect, useState, useContext } from 'react';
+import {
+  Component,
+  createElement,
+  useEffect,
+  useState,
+  useContext,
+} from 'react';
 import omit from 'object.omit';
 import ConnectorContext from './connectorContext';
 
@@ -11,52 +17,58 @@ function parse(message) {
   }
 }
 
-export default function subscribe(options) {
-  const { topic } = options;
-
+export default function subscribe() {
   return TargetComponent => {
-    function Subscriber(props) {
-      const [subscribed, setSubscribed] = useState(false);
-      const [data, setData] = useState([]);
-      const { mqtt } = useContext(ConnectorContext);
+    class Sub extends Component {
+      state = {
+        data: [],
+      };
+      constructor(props) {
+        super(props);
+        this.subscribe(this.props.topic);
+        this.props.mqtt.on('message', async (topic, message, packet) =>
+          this.onMessageHandler(topic, message)
+        );
+      }
 
-      useEffect(() => {
-        subscribe(topic);
+      componentWillUnmount() {
+        this.unsubscribe(this.props.topic);
+      }
 
-        mqtt.on('message', (topic, message, packet) => {
-          const jsonMessage = parse(message);
-          const newData = [jsonMessage, ...data];
-          console.log({ newData });
-          setData(newData);
-          console.log({ data });
+      getSnapshotBeforeUpdate(prevProps, prevState) {
+        this.subscribe(prevProps.topic);
+        return null;
+      }
+
+      async onMessageHandler(topic, message) {
+        const jsonMessage = parse(message);
+        const newData = [jsonMessage, ...this.state.data];
+        await this.setState({
+          data: newData,
         });
-      }, []);
+      }
 
-      useEffect(() => {
-        return () => unsubscribe(topic);
-      }, []);
-
-      const subscribe = topic => {
-        if (mqtt) {
-          mqtt.subscribe(topic);
-          setSubscribed(true);
+      subscribe(topic) {
+        if (this.props.mqtt) {
+          this.props.mqtt.subscribe(topic);
         }
-      };
+      }
 
-      const unsubscribe = topic => {
-        if (mqtt) {
-          mqtt.unsubscribe(topic);
-          setSubscribed(false);
+      unsubscribe(topic) {
+        if (this.props.mqtt) {
+          this.props.mqtt.unsubscribe(topic);
         }
-      };
+      }
 
-      return createElement(TargetComponent, {
-        ...omit(props, 'client'),
-        data,
-        mqtt,
-      });
+      render() {
+        const { data } = this.state;
+        return createElement(TargetComponent, {
+          ...omit(this.props, 'client'),
+          data,
+        });
+      }
     }
 
-    return Subscriber;
+    return Sub;
   };
 }

@@ -197,7 +197,7 @@ const chartOptions = {
   },
 };
 
-function Charts({ data }) {
+function LineChart({ data }) {
   const [chartData, setChartData] = useState(dummyData.line);
 
   useEffect(() => {
@@ -205,7 +205,7 @@ function Charts({ data }) {
       return { name, type, data };
     });
     setChartData(newData);
-  }, []);
+  }, [data]);
 
   return (
     <Grid xs={12} md={12} lg={6} item>
@@ -237,4 +237,4 @@ function Charts({ data }) {
   );
 }
 
-export default subscribe({ topic: 'sensor' })(Charts);
+export default subscribe({ topic: 'sensor' })(LineChart);

@@ -13,18 +13,20 @@ function parse(message) {
 export default function subscribe() {
   return TargetComponent => {
     class Subscriber extends Component {
+      // Format:
+      // data {
+      //   topic: {
+      //     topic: "",
+      //     data: [],
+      //   },
+      // }
       state = {
-        data: {
-          // topic: {
-          //   topic: ""
-          //   data: []
-          // }
-        },
+        data: {},
       };
       constructor(props) {
         super(props);
         this.subscribe(this.props.topic);
-        this.props.mqtt.on('message', async (topic, message, packet) =>
+        this.props.mqtt.on('message', (topic, message, packet) =>
           this.onMessageHandler(topic, message, packet)
         );
       }
@@ -38,7 +40,7 @@ export default function subscribe() {
         return null;
       }
 
-      async onMessageHandler(topic, message, packet) {
+      onMessageHandler(topic, message, packet) {
         const jsonMessage = parse(message);
         const { data } = this.state;
         if (!data[topic]) {
@@ -50,7 +52,7 @@ export default function subscribe() {
           data[topic].data = [jsonMessage, ...data[topic].data];
         }
 
-        await this.setState({ data });
+        this.setState({ data });
       }
 
       subscribe(topic) {

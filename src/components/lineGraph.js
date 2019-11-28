@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { subscribe } from 'mqtt-react';
+import subscribe from '../components/mqtt/subscribe';
 import Chart from './loadableChart';
 import {
   Card,
@@ -197,7 +197,7 @@ const chartOptions = {
   },
 };
 
-function Charts({ data }) {
+function LineChart({ data }) {
   const [chartData, setChartData] = useState(dummyData.line);
 
   useEffect(() => {
@@ -237,4 +237,4 @@ function Charts({ data }) {
   );
 }
 
-export default subscribe({ topic: 'sensor' })(Charts);
+export default subscribe()(LineChart);

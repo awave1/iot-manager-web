@@ -2,6 +2,7 @@ import React from 'react';
 import { Grid } from '@material-ui/core';
 import { makeStyles, createStyles } from '@material-ui/core/styles';
 import LineGraph from '../lineGraph';
+import { ConnectorConsumer } from '../mqtt/connector';
 
 const useStyles = makeStyles(theme =>
   createStyles({
@@ -14,11 +15,15 @@ const useStyles = makeStyles(theme =>
 function Dashboard() {
   const classes = useStyles();
   return (
-    <div className={classes.root}>
-      <Grid container spacing={6} justify="center">
-        <LineGraph />
-      </Grid>
-    </div>
+    <ConnectorConsumer>
+      {context => (
+        <div className={classes.root}>
+          <Grid container spacing={6} justify="center">
+            <LineGraph topic="weather" {...context} />
+          </Grid>
+        </div>
+      )}
+    </ConnectorConsumer>
   );
 }
 

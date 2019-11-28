@@ -10,6 +10,7 @@ import {
   FormControlLabel,
 } from '@material-ui/core';
 import { makeStyles } from '@material-ui/styles';
+import { api } from '../../utils';
 
 const useStyles = makeStyles({
   root: {
@@ -21,30 +22,12 @@ const useStyles = makeStyles({
   },
 });
 
-function createData(name, id, company, location, status) {
-  return { name, id, company, location, status };
-}
-
-const rows = [
-  createData('Google Home', 0, 'MRU', 'MRU', 'active'),
-  createData('Amazon Echo', 1, 'Apple', 'Mountain Valley', 'offline'),
-  createData('Apple home', 2, 'Google', 'Palo Alto', 'active'),
-  createData(
-    'NEST Thermostat',
-    3,
-    'PeopleSoft',
-    'University of Calgary',
-    'dead'
-  ),
-  createData('Zucc', 4, 'VK', 'St. Petersburg', 'active'),
-];
-
 function Devices() {
   const classes = useStyles();
   const [devices, setDevices] = useState([]);
 
   const fetchDevices = async () => {
-    const response = await fetch('http://localhost:3000/users/device');
+    const response = await fetch(api('/users/device'));
     const json = await response.json();
     if (json.length) {
       setDevices(json);
@@ -75,7 +58,7 @@ function Devices() {
         deviceStatus: status,
       });
 
-      await fetch('http://localhost:3000/users/device', {
+      await fetch(api('/users/device'), {
         method: 'POST',
         headers,
         body,

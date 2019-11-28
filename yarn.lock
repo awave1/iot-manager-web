@@ -8611,14 +8611,7 @@ mqtt-packet@^6.0.0:
     process-nextick-args "^2.0.0"
     safe-buffer "^5.1.2"
 
-mqtt-react@^0.0.3:
-  version "0.0.3"
-  resolved "https://registry.yarnpkg.com/mqtt-react/-/mqtt-react-0.0.3.tgz#f6ebb2aa17fb6958889f6acf3b1897320efa4f71"
-  integrity sha512-iO/2Kwduj/+peaHTHva1V4XCkdGIdoAoEzxETz0ODCq7AC28V+bmpoJUqf7Zzz5BfIeMHM8PKq3e8QX8eWN6lw==
-  dependencies:
-    mqtt "^2.8.0"
-
-mqtt@^2.3.1, mqtt@^2.8.0:
+mqtt@^2.3.1:
   version "2.18.8"
   resolved "https://registry.yarnpkg.com/mqtt/-/mqtt-2.18.8.tgz#9d213ccab92151accfb21ee8c0860dc6866ab259"
   integrity sha512-3h6oHlPY/yWwtC2J3geraYRtVVoRM6wdI+uchF4nvSSafXPZnaKqF8xnX+S22SU/FcgEAgockVIlOaAX3fkMpA==

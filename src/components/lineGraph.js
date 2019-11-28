@@ -68,8 +68,6 @@ const chartOptions = {
     },
     yaxis: {
       tickAmount: 5,
-      min: 0,
-      max: 100,
     },
   },
   radialBar: {

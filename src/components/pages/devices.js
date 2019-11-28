@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   Paper,
   Table,
@@ -6,6 +6,8 @@ import {
   TableCell,
   TableHead,
   TableRow,
+  Switch,
+  FormControlLabel,
 } from '@material-ui/core';
 import { makeStyles } from '@material-ui/styles';
 
@@ -39,29 +41,41 @@ const rows = [
 
 function Devices() {
   const classes = useStyles();
+  const [devices, setDevices] = useState([]);
+
+  const fetchDevices = async () => {
+    const response = await fetch('http://localhost:3000/users/device');
+    const json = await response.json();
+    if (json.length) {
+      setDevices(json);
+    }
+  };
+
+  useEffect(() => {
+    fetchDevices();
+  }, []);
 
   return (
     <Paper className={classes.root}>
       <Table className={classes.table} aria-label="simple table">
         <TableHead>
           <TableRow>
-            <TableCell>Device</TableCell>
-            <TableCell align="right">ID</TableCell>
-            <TableCell align="right">Company</TableCell>
-            <TableCell align="right">Location</TableCell>
+            <TableCell>Device ID</TableCell>
             <TableCell align="right">Status</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
-          {rows.map(row => (
-            <TableRow key={row.id}>
+          {devices.map(({ device_id: id, device_status: status }) => (
+            <TableRow key={id}>
               <TableCell component="th" scope="row">
-                {row.name}
+                {id}
               </TableCell>
-              <TableCell align="right">{row.id}</TableCell>
-              <TableCell align="right">{row.company}</TableCell>
-              <TableCell align="right">{row.location}</TableCell>
-              <TableCell align="right">{row.status}</TableCell>
+              <TableCell align="right">
+                <FormControlLabel
+                  control={<Switch color="primary" checked={!!status} />}
+                  label={`${status ? 'on' : 'off'}`}
+                />
+              </TableCell>
             </TableRow>
           ))}
         </TableBody>

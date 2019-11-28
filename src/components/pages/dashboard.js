@@ -1,10 +1,7 @@
 import React, { useState } from 'react';
 import {
+  Typography,
   Grid,
-  Modal,
-  Backdrop,
-  Fade,
-  Paper,
   Dialog,
   DialogTitle,
   DialogContent,
@@ -14,7 +11,10 @@ import {
   Fab,
   TextField,
 } from '@material-ui/core';
-import { Add } from '@material-ui/icons';
+import {
+  Add,
+  PortableWifiOffRounded as SubscriptionOffIcon,
+} from '@material-ui/icons';
 import { makeStyles, createStyles } from '@material-ui/core/styles';
 import LineGraph from '../lineGraph';
 import { ConnectorConsumer } from '../mqtt/connector';
@@ -42,6 +42,11 @@ const useStyles = makeStyles(theme =>
     },
     modalRow: {
       width: '100%',
+    },
+    noSubscription: {
+      display: 'flex',
+      flexDirection: 'column',
+      alignItems: 'center',
     },
   })
 );
@@ -73,9 +78,18 @@ function Dashboard() {
       {context => (
         <div className={classes.root}>
           <Grid container spacing={6} justify="center">
-            {topics.map(topic => (
-              <LineGraph key={topic} topic={topic} {...context} />
-            ))}
+            {topics.length ? (
+              topics.map(topic => (
+                <LineGraph key={topic} topic={topic} {...context} />
+              ))
+            ) : (
+              <div className={classes.noSubscription}>
+                <SubscriptionOffIcon color="disabled" fontSize="large" />
+                <Typography color="textSecondary">
+                  Subscribe to a topic
+                </Typography>
+              </div>
+            )}
           </Grid>
 
           <Fab

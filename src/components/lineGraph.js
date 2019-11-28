@@ -195,13 +195,14 @@ const chartOptions = {
   },
 };
 
-function LineChart({ data }) {
+function LineChart({ data, topic }) {
   const [chartData, setChartData] = useState(dummyData.line);
 
   useEffect(() => {
     const newData = chartData.map(({ name, type }) => {
       return { name, type, data };
     });
+
     setChartData(newData);
   }, [data]);
 
@@ -210,7 +211,7 @@ function LineChart({ data }) {
       <Card>
         <CardContent>
           <Typography color="textSecondary" gutterBottom variant="h5">
-            Line Graph
+            {topic}
           </Typography>
           {data.length ? (
             <Chart type="line" options={chartOptions.line} series={chartData} />
@@ -227,9 +228,6 @@ function LineChart({ data }) {
             </div>
           )}
         </CardContent>
-        <CardActions>
-          <Button size="small">Learn More</Button>
-        </CardActions>
       </Card>
     </Grid>
   );

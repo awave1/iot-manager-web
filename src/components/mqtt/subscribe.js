@@ -1,12 +1,5 @@
-import {
-  Component,
-  createElement,
-  useEffect,
-  useState,
-  useContext,
-} from 'react';
+import { Component, createElement } from 'react';
 import omit from 'object.omit';
-import ConnectorContext from './connectorContext';
 
 function parse(message) {
   try {
@@ -21,13 +14,18 @@ export default function subscribe() {
   return TargetComponent => {
     class Subscriber extends Component {
       state = {
-        data: [],
+        data: {
+          // topic: {
+          //   topic: ""
+          //   data: []
+          // }
+        },
       };
       constructor(props) {
         super(props);
         this.subscribe(this.props.topic);
         this.props.mqtt.on('message', async (topic, message, packet) =>
-          this.onMessageHandler(topic, message)
+          this.onMessageHandler(topic, message, packet)
         );
       }
 
@@ -40,12 +38,19 @@ export default function subscribe() {
         return null;
       }
 
-      async onMessageHandler(topic, message) {
+      async onMessageHandler(topic, message, packet) {
         const jsonMessage = parse(message);
-        const newData = [jsonMessage, ...this.state.data];
-        await this.setState({
-          data: newData,
-        });
+        const { data } = this.state;
+        if (!data[topic]) {
+          data[topic] = {
+            topic,
+            data: [jsonMessage],
+          };
+        } else {
+          data[topic].data = [jsonMessage, ...data[topic].data];
+        }
+
+        await this.setState({ data });
       }
 
       subscribe(topic) {
@@ -61,7 +66,9 @@ export default function subscribe() {
       }
 
       render() {
-        const { data } = this.state;
+        const dataForTopic = this.state.data[this.props.topic];
+        const data = dataForTopic ? dataForTopic.data : [];
+
         return createElement(TargetComponent, {
           ...omit(this.props, 'client'),
           data,

@@ -55,6 +55,36 @@ function Devices() {
     fetchDevices();
   }, []);
 
+  const handleDeviceStatus = async (index, id, status) => {
+    // @HACK: i dont like this
+    const updatedDevices = devices.map(({ device_id, device_status }, i) => ({
+      device_id,
+      device_status: i === index ? status : device_status,
+    }));
+
+    setDevices(updatedDevices);
+
+    try {
+      const headers = {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+      };
+
+      const body = JSON.stringify({
+        deviceId: id,
+        deviceStatus: status,
+      });
+
+      await fetch('http://localhost:3000/users/device', {
+        method: 'POST',
+        headers,
+        body,
+      });
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
   return (
     <Paper className={classes.root}>
       <Table className={classes.table} aria-label="simple table">
@@ -65,14 +95,22 @@ function Devices() {
           </TableRow>
         </TableHead>
         <TableBody>
-          {devices.map(({ device_id: id, device_status: status }) => (
-            <TableRow key={id}>
+          {devices.map(({ device_id: id, device_status: status }, index) => (
+            <TableRow key={index}>
               <TableCell component="th" scope="row">
                 {id}
               </TableCell>
               <TableCell align="right">
                 <FormControlLabel
-                  control={<Switch color="primary" checked={!!status} />}
+                  control={
+                    <Switch
+                      color="primary"
+                      checked={status}
+                      onChange={({ target: { checked } }) =>
+                        handleDeviceStatus(index, id, checked)
+                      }
+                    />
+                  }
                   label={`${status ? 'on' : 'off'}`}
                 />
               </TableCell>

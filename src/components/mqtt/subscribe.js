@@ -19,7 +19,7 @@ function parse(message) {
 
 export default function subscribe() {
   return TargetComponent => {
-    class Sub extends Component {
+    class Subscriber extends Component {
       state = {
         data: [],
       };
@@ -69,6 +69,6 @@ export default function subscribe() {
       }
     }
 
-    return Sub;
+    return Subscriber;
   };
 }

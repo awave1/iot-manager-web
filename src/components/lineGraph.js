@@ -237,4 +237,4 @@ function LineChart({ data }) {
   );
 }
 
-export default subscribe({ topic: 'sensor' })(LineChart);
+export default subscribe()(LineChart);

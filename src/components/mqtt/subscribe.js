@@ -49,7 +49,7 @@ export default function subscribe() {
             data: [jsonMessage],
           };
         } else {
-          data[topic].data = [jsonMessage, ...data[topic].data];
+          data[topic].data = [...data[topic].data, jsonMessage];
         }
 
         this.setState({ data });

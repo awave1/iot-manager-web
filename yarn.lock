@@ -1234,6 +1234,16 @@
   dependencies:
     "@babel/runtime" "^7.4.4"
 
+"@material-ui/lab@^4.0.0-alpha.33":
+  version "4.0.0-alpha.33"
+  resolved "https://registry.yarnpkg.com/@material-ui/lab/-/lab-4.0.0-alpha.33.tgz#3de96da1e813afcea5a07d56e54ec41cfa636e2c"
+  integrity sha512-+xttHUZLwH4+yfkB7B5A3pNDtQO27tGftuUxMRDMevNXwQtAB7mgYco34JwMr9kmvESYmacoZReOacJ6rxym/Q==
+  dependencies:
+    "@babel/runtime" "^7.4.4"
+    "@material-ui/utils" "^4.5.2"
+    clsx "^1.0.4"
+    prop-types "^15.7.2"
+
 "@material-ui/styles@^4.6.0":
   version "4.6.0"
   resolved "https://registry.yarnpkg.com/@material-ui/styles/-/styles-4.6.0.tgz#15679fab6dcbe0cc2416f01a22966f3ea26607c5"
@@ -8611,14 +8621,7 @@ mqtt-packet@^6.0.0:
     process-nextick-args "^2.0.0"
     safe-buffer "^5.1.2"
 
-mqtt-react@^0.0.3:
-  version "0.0.3"
-  resolved "https://registry.yarnpkg.com/mqtt-react/-/mqtt-react-0.0.3.tgz#f6ebb2aa17fb6958889f6acf3b1897320efa4f71"
-  integrity sha512-iO/2Kwduj/+peaHTHva1V4XCkdGIdoAoEzxETz0ODCq7AC28V+bmpoJUqf7Zzz5BfIeMHM8PKq3e8QX8eWN6lw==
-  dependencies:
-    mqtt "^2.8.0"
-
-mqtt@^2.3.1, mqtt@^2.8.0:
+mqtt@^2.3.1:
   version "2.18.8"
   resolved "https://registry.yarnpkg.com/mqtt/-/mqtt-2.18.8.tgz#9d213ccab92151accfb21ee8c0860dc6866ab259"
   integrity sha512-3h6oHlPY/yWwtC2J3geraYRtVVoRM6wdI+uchF4nvSSafXPZnaKqF8xnX+S22SU/FcgEAgockVIlOaAX3fkMpA==

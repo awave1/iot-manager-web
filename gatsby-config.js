@@ -13,6 +13,7 @@ if (process.env.NODE_ENV !== 'development') {
       `MQTT_PORT=${process.env.MQTT_PORT}`,
       `MQTT_PASS=${process.env.MQTT_PASS}`,
       `MQTT_USER=${process.env.MQTT_USER}`,
+      `IOT_MANAGER_API=${process.env.IOT_MANAGER_API}`,
     ].join('\n')
   );
 }

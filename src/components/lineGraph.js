@@ -1,51 +1,48 @@
 import React, { useState, useEffect } from 'react';
-import { subscribe } from 'mqtt-react';
+import subscribe from '../components/mqtt/subscribe';
 import Chart from './loadableChart';
-import {
-  Card,
-  CardContent,
-  CardActions,
-  Button,
-  Grid,
-  Typography,
-} from '@material-ui/core';
-import AssessmentRoundedIcon from '@material-ui/icons/AssessmentRounded';
+import { Card, CardContent, Grid, Typography } from '@material-ui/core';
+import Skeleton from '@material-ui/lab/Skeleton';
+import { makeStyles, createStyles } from '@material-ui/styles';
 
-const dummyData = {
-  line: [
-    {
-      name: 'series-1',
-      type: 'line',
-      data: [],
+const useStyles = makeStyles(theme =>
+  createStyles({
+    chart: {
+      height: 350,
     },
-  ],
-  radial: [0],
-  bar: [
-    {
-      name: 'blue',
-      data: [0],
-    },
-    {
-      name: 'green',
-      data: [0],
-    },
-    {
-      name: 'yellow',
-      data: [0],
-    },
-    {
-      name: 'red',
-      data: [0],
-    },
-  ],
-};
+  })
+);
 
 const chartOptions = {
   line: {
     chart: {
       id: 'basic-bar',
+      stroke: {
+        curve: 'smooth',
+      },
       toolbar: {
-        show: false,
+        show: true,
+        tools: {
+          zoom: true,
+          zoomin: true,
+          zoomout: true,
+          pan: true,
+        },
+        autoSelected: 'zoom',
+        zoom: {
+          enabled: true,
+          type: 'x',
+          resetIcon: {
+            offsetX: -10,
+            offsetY: 0,
+            fillColor: '#fff',
+            strokeColor: '#37474F',
+          },
+          selection: {
+            background: '#90CAF9',
+            border: '#0D47A1',
+          },
+        },
       },
     },
     plotOptions: {
@@ -68,142 +65,21 @@ const chartOptions = {
     },
     yaxis: {
       tickAmount: 5,
-      min: 0,
-      max: 100,
-    },
-  },
-  radialBar: {
-    plotOptions: {
-      radialBar: {
-        startAngle: -135,
-        endAngle: 225,
-        hollow: {
-          margin: 0,
-          size: '70%',
-          background: '#fff',
-          image: undefined,
-          imageOffsetX: 0,
-          imageOffsetY: 0,
-          position: 'front',
-          dropShadow: {
-            enabled: true,
-            top: 3,
-            left: 0,
-            blur: 4,
-            opacity: 0.24,
-          },
-        },
-        track: {
-          background: '#fff',
-          strokeWidth: '67%',
-          margin: 0, // margin is in pixels
-          dropShadow: {
-            enabled: true,
-            top: -3,
-            left: 0,
-            blur: 4,
-            opacity: 0.35,
-          },
-        },
-
-        dataLabels: {
-          showOn: 'always',
-          name: {
-            offsetY: -20,
-            show: true,
-            color: '#888',
-            fontSize: '13px',
-          },
-          value: {
-            formatter: function(val) {
-              return val;
-            },
-            color: '#111',
-            fontSize: '30px',
-            show: true,
-          },
-        },
-      },
-    },
-    fill: {
-      type: 'gradient',
-      gradient: {
-        shade: 'dark',
-        type: 'horizontal',
-        shadeIntensity: 0.5,
-        gradientToColors: ['#ABE5A1'],
-        inverseColors: true,
-        opacityFrom: 1,
-        opacityTo: 1,
-        stops: [0, 100],
-      },
-    },
-    stroke: {
-      lineCap: 'round',
-    },
-    labels: ['Percent'],
-  },
-  bar: {
-    chart: {
-      stacked: true,
-      stackType: '100%',
-      toolbar: {
-        show: false,
-      },
-    },
-    plotOptions: {
-      bar: {
-        horizontal: true,
-      },
-    },
-    dataLabels: {
-      dropShadow: {
-        enabled: true,
-      },
-    },
-    stroke: {
-      width: 0,
-    },
-    xaxis: {
-      categories: ['Fav Color'],
-      labels: {
-        show: false,
-      },
-      axisBorder: {
-        show: false,
-      },
-      axisTicks: {
-        show: false,
-      },
-    },
-    fill: {
-      opacity: 1,
-      type: 'gradient',
-      gradient: {
-        shade: 'dark',
-        type: 'vertical',
-        shadeIntensity: 0.35,
-        gradientToColors: undefined,
-        inverseColors: false,
-        opacityFrom: 0.85,
-        opacityTo: 0.85,
-        stops: [90, 0, 100],
-      },
-    },
-    legend: {
-      position: 'bottom',
-      horizontalAlign: 'right',
     },
   },
 };
 
-function Charts({ data }) {
-  const [chartData, setChartData] = useState(dummyData.line);
+function LineChart({ data, topic }) {
+  const classes = useStyles();
+  const [chartData, setChartData] = useState([
+    { name: topic, type: 'line', data: [] },
+  ]);
 
   useEffect(() => {
     const newData = chartData.map(({ name, type }) => {
       return { name, type, data };
     });
+
     setChartData(newData);
   }, [data]);
 
@@ -212,29 +88,22 @@ function Charts({ data }) {
       <Card>
         <CardContent>
           <Typography color="textSecondary" gutterBottom variant="h5">
-            Line Graph
+            {topic}
           </Typography>
           {data.length ? (
-            <Chart type="line" options={chartOptions.line} series={chartData} />
+            <Chart
+              className={classes.chart}
+              type="line"
+              options={chartOptions.line}
+              series={chartData}
+            />
           ) : (
-            <div
-              style={{
-                display: 'flex',
-                flexDirection: 'column',
-                alignItems: 'center',
-              }}
-            >
-              <AssessmentRoundedIcon color="disabled" fontSize="large" />
-              <Typography color="textSecondary">No Data</Typography>
-            </div>
+            <Skeleton className={classes.chart} variant="rect" />
           )}
         </CardContent>
-        <CardActions>
-          <Button size="small">Learn More</Button>
-        </CardActions>
       </Card>
     </Grid>
   );
 }
 
-export default subscribe({ topic: 'sensor' })(Charts);
+export default subscribe()(LineChart);

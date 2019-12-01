@@ -1,9 +1,9 @@
 import React from 'react';
-import { Router, Link, Location } from '@reach/router';
+import { Router } from '@reach/router';
 import { Layout } from '../components';
 import { Dashboard, Devices, Settings } from '../components/pages/';
 import mqtt from 'mqtt';
-import { Connector } from 'mqtt-react';
+import { ConnectorProvider } from '../components/mqtt/connector';
 
 const cloudMqttUrl = `mqtts://${process.env.MQTT_HOST}`;
 const options = {
@@ -18,7 +18,7 @@ if (process.env.NODE_ENV === 'production') {
 }
 
 const App = () => (
-  <Connector mqtt={mqtt.connect(cloudMqttUrl, options)}>
+  <ConnectorProvider mqttClient={mqtt.connect(cloudMqttUrl, options)}>
     <Layout>
       <Router>
         <Dashboard path="/" />
@@ -26,7 +26,7 @@ const App = () => (
         <Settings path="/settings" />
       </Router>
     </Layout>
-  </Connector>
+  </ConnectorProvider>
 );
 
 export default App;

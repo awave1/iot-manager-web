@@ -75,6 +75,7 @@ function Devices() {
         <TableHead>
           <TableRow>
             <TableCell>Device ID</TableCell>
+            <TableCell>Name</TableCell>
             <TableCell align="right">Status</TableCell>
           </TableRow>
         </TableHead>

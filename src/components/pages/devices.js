@@ -27,6 +27,7 @@ function Devices() {
   const [devices, setDevices] = useState([]);
 
   const fetchDevices = async () => {
+    console.log(api('/users/device'));
     const response = await fetch(api('/users/device'));
     const json = await response.json();
     if (json.length) {
@@ -78,27 +79,35 @@ function Devices() {
           </TableRow>
         </TableHead>
         <TableBody>
-          {devices.map(({ device_id: id, device_status: status }, index) => (
-            <TableRow key={index}>
-              <TableCell component="th" scope="row">
-                {id}
-              </TableCell>
-              <TableCell align="right">
-                <FormControlLabel
-                  control={
-                    <Switch
-                      color="primary"
-                      checked={status}
-                      onChange={({ target: { checked } }) =>
-                        handleDeviceStatus(index, id, checked)
-                      }
-                    />
-                  }
-                  label={`${status ? 'on' : 'off'}`}
-                />
-              </TableCell>
-            </TableRow>
-          ))}
+          {devices.map(
+            (
+              { device_id: id, device_status: status, device_name: name },
+              index
+            ) => (
+              <TableRow key={index}>
+                <TableCell component="th" scope="row">
+                  {id}
+                </TableCell>
+                <TableCell component="th" scope="row">
+                  {name}
+                </TableCell>
+                <TableCell align="right">
+                  <FormControlLabel
+                    control={
+                      <Switch
+                        color="primary"
+                        checked={status}
+                        onChange={({ target: { checked } }) =>
+                          handleDeviceStatus(index, id, checked)
+                        }
+                      />
+                    }
+                    label={`${status ? 'on' : 'off'}`}
+                  />
+                </TableCell>
+              </TableRow>
+            )
+          )}
         </TableBody>
       </Table>
     </Paper>
